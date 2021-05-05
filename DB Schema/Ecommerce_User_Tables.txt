@@ -1,0 +1,100 @@
+
+Table user_details {
+  user_id int [pk, increment] // auto-increment
+  first_name varchar [not null]
+  last_name varchar [not null]
+  gender varchar [not null]
+  billing_address_id1 int [not null, ref: > address_details.address_id]
+  billing_address_id2 int [not null, ref: > address_details.address_id]
+  billing_address_id3 int [not null, ref: > address_details.address_id]
+  shipping_address_id1 int [not null, ref: > address_details.address_id]
+  shipping_address_id2 int [not null, ref: > address_details.address_id]
+  shipping_address_id3 int [not null, ref: > address_details.address_id]
+  phone int [not null]
+  email_id varchar [not null]
+  age int [not null]
+  contact_address_id int [not null, ref: > address_details.address_id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+
+Table address_details {
+  address_id int [pk, increment]
+  address_line1 varchar [not null]
+  address_line2 varchar 
+  street varchar 
+  city varchar [not null]
+  state_code int [not null, ref: > states.code]
+  country_code int [not null, ref: > countries.code]
+  zip_code int [not null]
+}
+
+Table countries {
+  code int [pk]
+  name varchar
+  continent_name varchar
+ }
+ 
+ Table states {
+  code int [pk]
+  name varchar
+  country_name varchar
+ }
+ 
+ Table roles_details {
+   code int [pk, increment]
+   role_name varchar [not null]
+   is_active boolean [default: '1']
+   is_blocked boolean [default: '0']
+ }
+ 
+ Table object_role_mapper_details {
+   id int [pk, increment]
+   object_id varchar [not null] // unique
+   role_code1 int [not null, ref: > roles_details.code]
+   role_code2 int [not null, ref: > roles_details.code]
+   role_code3 int [not null, ref: > roles_details.code]
+   is_role_active1 boolean [default: '1']
+   is_role_active2 boolean [default: '1']
+   is_role_active3 boolean [default: '1']
+   created_at timestamp
+   updated_at timestamp
+ }
+ 
+ Table roles_user_details {
+   id int [pk, increment]
+   user_id int [not null, ref: > user_details.user_id]
+   role_id1 int [not null, ref: > roles_details.code]
+   role_id2 int [not null, ref: > roles_details.code]
+   role_id3 int [not null, ref: > roles_details.code]
+   is_role_active1 boolean [default: '1']
+   is_role_active2 boolean [default: '1']
+   is_role_active3 boolean [default: '1']
+   created_at timestamp
+   updated_at timestamp
+ }
+ 
+ Table user_login_details {
+   user_id int [not null, ref: > user_details.user_id]
+   user_login_id int [pk, increment]
+   user_pwd varchar [not null]
+   is_active boolean [default: '1']
+   is_blocked boolean [default: '0']
+   created_at timestamp
+   updated_at timestamp
+   assigned_roles varchar [not null]
+   
+ }
+ 
+ Table session_history {
+   session_id varchar [not null]
+   created_at timestamp
+   updated_at timestamp
+   valid_at timestamp
+   user_login_id int [not null, ref: > user_login_details.user_login_id]
+   user_id int [not null, ref: > user_details.user_id]
+   history_id int [pk, increment]
+ }
+
+

@@ -1,0 +1,104 @@
+Table bill_product_details {
+  product_id int [not null]
+  pc_id int [not null]
+  selling_price double [not null]
+  applicable_offers int [not null]
+  applicable_coupons int [not null]
+  is_valid boolean [default: '1']
+  is_active boolean [default: '1']
+  bill_prod_id int [pk, increment]
+  country_code varchar [default: 'us']
+}
+
+Table bill_user_details {
+  bill_user_id int [pk, increment]
+  user_id int [pk, increment]
+  saved_points int [default: 0]
+  points_expiry_date timestamp [not null]
+  points_updated_at timestamp [not null]
+  applicable_coupons int [not null, ref: > coupon_details.id]
+  applicable_offers int [not null, ref: > offer_details.offer_code]
+  primary_bill_address_id int [not null]
+  primary_ship_address_id int [not null]
+  payment_mode_code1 varchar [not null, ref: > payment_mode_details.code]
+  payment_mode_code2 varchar [not null, ref: > payment_mode_details.code]
+  payment_mode_code3 varchar [not null, ref: > payment_mode_details.code]
+  is_payment_mode1_active boolean [default: '0']
+  is_payment_mode2_active boolean [default: '0']
+  is_payment_mode3_active boolean [default: '0']
+  country_code varchar [not null]
+  taxe_code varchar [not null, ref: > tax_details.id]
+  currency_code varchar [not null, ref: > currency_details.code]
+}
+
+Table currency_details {
+  code varchar [pk]
+  currency_name varchar [not null]
+  country_code int [not null]
+}
+
+Table tax_details {
+  id int [pk, increment]
+  country_code int [not null]
+  tax_per_cent double [not null]
+  from_year timestamp [not null]
+  to_year timestamp [not null]
+  is_active boolean [default: '1']
+}
+
+Table coupon_details {
+  coupon_code varchar [not null] // unique
+  id int [pk, increment]
+  created_at timestamp
+  updated_at timestamp
+  expiry_at timestamp
+  is_active boolean [default: '1']
+  is_blocked boolean [default: '0']
+  min_price double
+  payment_mode_code varchar [ref: > payment_mode_details.code]
+}
+
+Table offer_details {
+  offer_code varchar [pk, increment]
+  created_at timestamp
+  updated_at timestamp
+  expiry_at timestamp
+  is_active boolean [default: '1']
+  is_blocked boolean [default: '0']
+  applicable_products int [not null] // list
+  applicable_pc_ids int [not null] //list // product_id must match
+  min_price double
+}
+
+Table payment_mode_details {
+  code varchar [not null] // unique
+  id int [pk, increment]
+  method_name varchar [not null]
+}
+
+Table invoice_details {
+  invoice_id int [pk, increment]
+  created_at timestamp
+  updated_at timestamp
+  product_id int [not null]
+  pc_id int [not null]
+  bill_user_id int [not null, ref: > bill_user_details.bill_user_id]
+  bill_prod_id int [not null, ref: > bill_product_details.bill_prod_id]
+  applied_offer int [not null, ref: > offer_details.offer_code]
+  applied_coupon int [not null, ref: > coupon_details.id]
+  selling_price int [not null, ref: > bill_product_details.selling_price]
+  total_tax double [default: 0.0]
+  final_price double [not null]
+  user_id int [not null]
+  mobile_no varchar [not null]
+  email_id varchar
+  shipping_address_id int [not null]
+  billing_address_id int [not null]
+  payment_mode int [not null, ref: > payment_mode_details.code]
+  payment_status varchar [not null]
+  payment_done_at timestamp [not null]
+  order_id int [not null]
+  order_status varchar [not null]
+  order_placed_date timestamp [not null]
+  country_code int [not null]
+}
